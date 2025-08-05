@@ -6,9 +6,9 @@ import ra.java_service_project.utils.CourseStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Builder
 public class CourseResponse {
     private Integer courseId;
@@ -20,4 +20,6 @@ public class CourseResponse {
     private Integer teacherId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long enrollmentCount;
+
 }

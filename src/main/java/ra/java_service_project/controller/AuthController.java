@@ -1,5 +1,7 @@
 package ra.java_service_project.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,7 @@ import ra.java_service_project.model.dto.request.UserRegister;
 import ra.java_service_project.model.dto.response.APIDataResponse;
 import ra.java_service_project.model.dto.response.JWTResponse;
 import ra.java_service_project.model.entity.User;
-import ra.java_service_project.repository.UserRepository;
+import ra.java_service_project.security.jwt.JWTProvider;
 import ra.java_service_project.service.UserService;
 
 @RestController
@@ -21,13 +23,18 @@ public class AuthController {
     private UserService userService;
 
 
+
+    @Autowired
+    private JWTProvider jwtProvider;
+
+
     @PostMapping("/register")
-    public ResponseEntity<APIDataResponse<User>> register(@RequestBody UserRegister userRegister) {
+    public ResponseEntity<APIDataResponse<User>> register(@Valid @RequestBody UserRegister userRegister) {
         return new ResponseEntity<>(new APIDataResponse<>(true, "success", userService.register(userRegister), HttpStatus.OK), HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<APIDataResponse<JWTResponse>> login(@RequestBody UserLogin userLogin) {
+    public ResponseEntity<APIDataResponse<JWTResponse>> login(@Valid @RequestBody UserLogin userLogin) {
         return new ResponseEntity<>(new APIDataResponse<>(true, "success", userService.login(userLogin), HttpStatus.OK), HttpStatus.OK);
     }
 
@@ -38,6 +45,13 @@ public class AuthController {
     }
 
 
-
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String bearerToken) {
+        // Remove "Bearer " prefix
+        String token = bearerToken.substring(7);
+        userService.logout(token);
+        return ResponseEntity.ok(new APIDataResponse<>(true, "Đăng xuất thành công",
+                null, HttpStatus.OK));
+    }
 
 }

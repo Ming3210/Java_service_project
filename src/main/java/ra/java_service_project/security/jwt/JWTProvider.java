@@ -1,15 +1,22 @@
 package ra.java_service_project.security.jwt;
 
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ra.java_service_project.service.impl.JwtTokenBlacklist;
 
 import java.util.Date;
 
 @Component
 @Slf4j
 public class JWTProvider {
+
+    @Autowired
+    private JwtTokenBlacklist tokenBlacklist;
+
     @Value("${jwt_secret}")
     private String jwtSecret;
     @Value("${jwt_expire}")
@@ -29,6 +36,9 @@ public class JWTProvider {
 
     public boolean validateToken(String token){
         try{
+            if (tokenBlacklist.isBlacklisted(token)) {
+                return false;
+            }
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
         }catch (ExpiredJwtException e){
@@ -61,4 +71,13 @@ public class JWTProvider {
         }
         return null;
     }
+
+    public String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
 }

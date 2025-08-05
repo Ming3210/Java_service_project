@@ -1,5 +1,6 @@
 package ra.java_service_project.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,10 +23,12 @@ public class Enrollment {
     @Column(name = "enrollment_id")
     private Integer enrollmentId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
@@ -43,7 +46,7 @@ public class Enrollment {
     @Column(name = "progress_percentage", precision = 5, scale = 2, nullable = false, columnDefinition = "DECIMAL(5,2) DEFAULT 0.00 CHECK (progress_percentage >= 0 AND progress_percentage <= 100)")
     private BigDecimal progressPercentage = BigDecimal.ZERO;
 
-    // Relationships
+    @JsonIgnore
     @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<LessonProgress> lessonProgresses;
 

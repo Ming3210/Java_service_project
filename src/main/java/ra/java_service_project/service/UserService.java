@@ -6,7 +6,11 @@ import ra.java_service_project.model.dto.request.UserLogin;
 import ra.java_service_project.model.dto.request.UserProfileRequest;
 import ra.java_service_project.model.dto.request.UserRegister;
 import ra.java_service_project.model.dto.response.JWTResponse;
+import ra.java_service_project.model.dto.response.StudentProgressResponse;
+import ra.java_service_project.model.dto.response.TeacherCourseStats;
 import ra.java_service_project.model.entity.User;
+
+import java.util.List;
 
 public interface UserService {
     User register(UserRegister userRegister);
@@ -21,9 +25,18 @@ public interface UserService {
 
     User createUser(User user);
 
-    User updateUser(User user, Integer id);
+    User updateUser(User user, Integer id); // chua lam update status rieng, role rieng
 
     void deleteUser(Integer id);
 
+    boolean existsByEmail(String email);
+
+    Boolean updatePassword(String newPassword, Integer id);
+
+    Boolean logout(String token);
+
+    List<UserProfileRequest> getUsersByStatus(Boolean status);
+
+    List<StudentProgressResponse> getStudentProgress(Integer studentId);
 
 }

@@ -13,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ra.java_service_project.model.dto.request.CreateUserDTO;
 import ra.java_service_project.model.dto.request.UserLogin;
 import ra.java_service_project.model.dto.request.UserProfileRequest;
 import ra.java_service_project.model.dto.request.UserRegister;
@@ -136,12 +137,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public User createUser(CreateUserDTO dto) {
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setEmail(dto.getEmail());
+        user.setFullName(dto.getFullName());
+        user.setRole(dto.getRole());
+        user.setIsActive(true);
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
+
         return userRepository.save(user);
     }
+
 
     @Override
     public User updateUser(User user, Integer id) {

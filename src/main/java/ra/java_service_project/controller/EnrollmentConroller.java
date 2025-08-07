@@ -1,5 +1,6 @@
 package ra.java_service_project.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class EnrollmentConroller {
     }
 
     @PostMapping
-    public ResponseEntity<APIDataResponse<Enrollment>> registerEnrollment(@RequestBody EnrollmentDTO enrollment) {
+    public ResponseEntity<APIDataResponse<Enrollment>> registerEnrollment(@Valid @RequestBody EnrollmentDTO enrollment) {
         return new ResponseEntity<>(new APIDataResponse<>(true, "success", enrollmentService.registerEnrollment(enrollment), HttpStatus.OK), HttpStatus.OK);
     }
 

@@ -11,7 +11,7 @@ public interface NotificationService {
 
     Boolean readNotification(Integer notificationId);
 
-    NotificationResponse createNotification(NotificationRequest notification, Integer userId);
+    NotificationResponse createNotification(NotificationRequest notification);
 
     Boolean deleteNotification(Integer notificationId);
 

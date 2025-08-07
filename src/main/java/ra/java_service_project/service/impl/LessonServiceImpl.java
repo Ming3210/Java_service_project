@@ -30,8 +30,8 @@ public class LessonServiceImpl implements LessonService {
                 .textContent(lesson.getTextContent())
                 .orderIndex(lesson.getOrderIndex())
                 .isPublished(lesson.getIsPublished())
-                .createdAt(lesson.getCreatedAt())
-                .updatedAt(lesson.getUpdatedAt())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .courseId(lesson.getCourse() != null ? lesson.getCourse().getCourseId() : null)
                 .build();
     }
@@ -44,23 +44,13 @@ public class LessonServiceImpl implements LessonService {
                 .textContent(lessonDTO.getTextContent())
                 .orderIndex(lessonDTO.getOrderIndex())
                 .isPublished(lessonDTO.getIsPublished())
-                .createdAt(lessonDTO.getCreatedAt())
-                .updatedAt(lessonDTO.getUpdatedAt())
-                .course(courseRepository.findById(courseId).orElseThrow(() -> new NoSuchElementException("Course not found")))
-                .build();
-        Lesson lessonEntity = Lesson.builder()
-                .lessonId(lesson.getLessonId())
-                .title(lesson.getTitle())
-                .contentUrl(lesson.getContentUrl())
-                .textContent(lesson.getTextContent())
-                .orderIndex(lesson.getOrderIndex())
-                .isPublished(lesson.getIsPublished())
-                .createdAt(lesson.getCreatedAt())
-                .updatedAt(lesson.getUpdatedAt())
-                .course(lesson.getCourse())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .course(courseRepository.findById(courseId)
+                        .orElseThrow(() -> new NoSuchElementException("Course not found")))
                 .build();
 
-        Lesson savedLesson = lessonRepository.save(lessonEntity);
+        Lesson savedLesson = lessonRepository.save(lesson);
 
         return LessonDTO.builder()
                 .lessonId(savedLesson.getLessonId())
@@ -74,6 +64,7 @@ public class LessonServiceImpl implements LessonService {
                 .courseId(savedLesson.getCourse() != null ? savedLesson.getCourse().getCourseId() : null)
                 .build();
     }
+
 
     @Override
     public LessonDTO updateLesson(LessonDTO lessonDTO, Integer id) {

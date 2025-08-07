@@ -2,6 +2,7 @@ package ra.java_service_project.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
+import ra.java_service_project.model.dto.request.CreateUserDTO;
 import ra.java_service_project.model.dto.request.UserLogin;
 import ra.java_service_project.model.dto.request.UserProfileRequest;
 import ra.java_service_project.model.dto.request.UserRegister;
@@ -23,7 +24,7 @@ public interface UserService {
 
     User findById(Integer id);
 
-    User createUser(User user);
+    User createUser(CreateUserDTO user);
 
     User updateUser(User user, Integer id); // chua lam update status rieng, role rieng
 

@@ -11,6 +11,7 @@ import ra.java_service_project.repository.NotificationRepository;
 import ra.java_service_project.repository.UserRepository;
 import ra.java_service_project.service.NotificationService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -52,28 +53,31 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationResponse createNotification(NotificationRequest notification, Integer userId) {
-        User user = userRepository.findById(userId)
+    public NotificationResponse createNotification(NotificationRequest notification) {
+        User user = userRepository.findById(notification.getUserId())
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
+
         Notification newNotification = Notification.builder()
                 .user(user)
                 .message(notification.getMessage())
                 .type(notification.getType())
                 .targetUrl(notification.getTargetUrl())
+                .isRead(false)
+                .createdAt(LocalDateTime.now())
                 .build();
+
         notificationRepository.save(newNotification);
+
         return NotificationResponse.builder()
                 .notificationId(newNotification.getNotificationId())
-                .userId(newNotification.getUser().getUserId())
+                .userId(user.getUserId())
                 .message(newNotification.getMessage())
                 .type(newNotification.getType())
                 .targetUrl(newNotification.getTargetUrl())
                 .isRead(newNotification.getIsRead())
                 .createdAt(newNotification.getCreatedAt())
                 .build();
-
     }
-
     @Override
     public Boolean deleteNotification(Integer notificationId) {
         try {

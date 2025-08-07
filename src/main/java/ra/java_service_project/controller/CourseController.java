@@ -1,5 +1,6 @@
 package ra.java_service_project.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -29,10 +30,10 @@ public class CourseController {
     @Autowired
     private ReviewService reviewService;
 
-//    @GetMapping
-//    public ResponseEntity<APIDataResponse<Page<CourseRequest>>> getAllCourses(@RequestBody CoursePagingRequest coursePagingRequest) {
-//        return new ResponseEntity<>(new APIDataResponse<>(true, "success", courseService.getAllCourses(coursePagingRequest.getPage(), coursePagingRequest.getItemPage(), coursePagingRequest.getSortBy(), coursePagingRequest.getOrderBy()), HttpStatus.OK), HttpStatus.OK);
-//    }
+    @GetMapping
+    public ResponseEntity<APIDataResponse<Page<CourseRequest>>> getAllCourses(@RequestBody CoursePagingRequest coursePagingRequest) {
+        return new ResponseEntity<>(new APIDataResponse<>(true, "success", courseService.getAllCourses(coursePagingRequest.getPage(), coursePagingRequest.getItemPage(), coursePagingRequest.getSortBy(), coursePagingRequest.getOrderBy()), HttpStatus.OK), HttpStatus.OK);
+    }
 
     @GetMapping("{id}")
     public ResponseEntity<APIDataResponse<CourseRequest>> getCourseById(@PathVariable Integer id) {
@@ -63,11 +64,11 @@ public class CourseController {
     }
 
     @PostMapping("{id}/lessons")
-    public ResponseEntity<APIDataResponse<LessonDTO>> createLesson(@RequestBody LessonDTO lessonDTO) {
+    public ResponseEntity<APIDataResponse<LessonDTO>> createLesson(@Valid @RequestBody LessonDTO lessonDTO) {
         return new ResponseEntity<>(new APIDataResponse<>(true, "success", lessonService.createLesson(lessonDTO, lessonDTO.getCourseId()), HttpStatus.CREATED), HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping(params = "search")
     public ResponseEntity<APIDataResponse<List<CourseSearchResponse>>> search(@RequestParam(name = "search") String keyword) {
         return new ResponseEntity<>(new APIDataResponse<>(true, "success", courseService.searchCourses(keyword), HttpStatus.OK), HttpStatus.OK);
     }
@@ -78,7 +79,7 @@ public class CourseController {
     }
 
     @PostMapping("{id}/reviews")
-    public ResponseEntity<APIDataResponse<ReviewDTO>> createReview(@RequestBody ReviewDTO reviewRequest, @PathVariable Integer id) {
+    public ResponseEntity<APIDataResponse<ReviewDTO>> createReview(@Valid @RequestBody ReviewDTO reviewRequest, @PathVariable Integer id) {
         return new ResponseEntity<>(new APIDataResponse<>(true, "success", reviewService.createReview(reviewRequest, id), HttpStatus.OK), HttpStatus.OK);
     }
 
@@ -88,7 +89,7 @@ public class CourseController {
     }
 
     @GetMapping("{id}/reviews")
-    public ResponseEntity<APIDataResponse<List<ReviewDTO>>> getReviewById(@PathVariable Integer id) {
+    public ResponseEntity<APIDataResponse<List<ReviewDTO>>> getReviewById( @PathVariable Integer id) {
         return new ResponseEntity<>(new APIDataResponse<>(true, "success", reviewService.getReviewsByCourseId(id), HttpStatus.OK), HttpStatus.OK);
     }
 

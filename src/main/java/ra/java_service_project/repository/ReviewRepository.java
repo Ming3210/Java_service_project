@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ra.java_service_project.model.entity.Course;
 import ra.java_service_project.model.entity.Lesson;
 import ra.java_service_project.model.entity.Review;
+import ra.java_service_project.model.entity.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,4 +15,6 @@ public interface ReviewRepository extends JpaRepository<Review,Integer> {
     Optional<Object> findByCourse(Course course);
 
     List<Review> findByCourse_CourseId(Integer courseCourseId);
+
+    boolean existsByStudentAndCourse(User student, Course course);
 }

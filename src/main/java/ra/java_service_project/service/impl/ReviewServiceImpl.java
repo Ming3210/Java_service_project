@@ -8,6 +8,7 @@ import ra.java_service_project.model.entity.Course;
 import ra.java_service_project.model.entity.Review;
 import ra.java_service_project.model.entity.User;
 import ra.java_service_project.repository.CourseRepository;
+import ra.java_service_project.repository.EnrollmentRepository;
 import ra.java_service_project.repository.ReviewRepository;
 import ra.java_service_project.repository.UserRepository;
 import ra.java_service_project.service.ReviewService;
@@ -27,6 +28,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Autowired
     private CourseRepository courseRepository;
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
 
     @Override
     public List<ReviewDTO> getReviewsByCourseId(Integer courseId) {
@@ -53,6 +56,17 @@ public class ReviewServiceImpl implements ReviewService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NoSuchElementException("Course not found"));
 
+        //  Check nếu chưa đăng ký thì không cho đánh giá
+        boolean isEnrolled = enrollmentRepository.existsByStudentAndCourse(currentUser, course);
+        if (!isEnrolled) {
+            throw new IllegalStateException("Bạn chưa đăng ký khóa học này nên không thể đánh giá.");
+        }
+
+        boolean alreadyReviewed = reviewRepository.existsByStudentAndCourse(currentUser, course);
+        if (alreadyReviewed) {
+            throw new IllegalStateException("Bạn đã đánh giá khóa học này rồi.");
+        }
+
         Review newReview = Review.builder()
                 .student(currentUser)
                 .course(course)
@@ -63,6 +77,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .build();
 
         Review savedReview = reviewRepository.save(newReview);
+
         return ReviewDTO.builder()
                 .courseId(savedReview.getCourse().getCourseId())
                 .userId(savedReview.getStudent().getUserId())
@@ -72,6 +87,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .updatedAt(savedReview.getUpdatedAt())
                 .build();
     }
+
 
     @Override
     public ReviewDTO updateReview(ReviewDTO review, Integer courseId) {

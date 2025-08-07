@@ -1,10 +1,12 @@
 package ra.java_service_project.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ra.java_service_project.model.dto.request.CreateUserDTO;
 import ra.java_service_project.model.dto.request.PasswordChangeRequest;
 import ra.java_service_project.model.dto.request.UserPagingRequest;
 import ra.java_service_project.model.dto.request.UserProfileRequest;
@@ -31,9 +33,11 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<APIDataResponse<User>> createUser(@RequestBody User user) {
-        return new ResponseEntity<>(new APIDataResponse<>(true, "success", userService.createUser(user), HttpStatus.OK), HttpStatus.OK);
+    public ResponseEntity<APIDataResponse<User>> createUser(@Valid @RequestBody CreateUserDTO dto) {
+        User createdUser = userService.createUser(dto);
+        return ResponseEntity.ok(new APIDataResponse<>(true, "success", createdUser, HttpStatus.OK));
     }
+
 
     @PutMapping("{id}")
     public ResponseEntity<APIDataResponse<User>> updateUser(@RequestBody User user, @PathVariable Integer id) {
